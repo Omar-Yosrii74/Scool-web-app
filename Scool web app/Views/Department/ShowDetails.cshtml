@@ -1,0 +1,23 @@
+﻿@model MySchoolApp.Models.Department
+@{ ViewData["Title"] = "Department Details"; }
+
+<h2>@Model.Name</h2>
+<p><strong>Manager:</strong> @Model.MgrName</p>
+
+<h5>Students (@Model.Students?.Count):</h5>
+<ul>
+    @foreach (var s in Model.Students ?? new List<MySchoolApp.Models.Student>())
+    {
+        <li>@s.Name - Age: @s.Age</li>
+    }
+</ul>
+
+<h5>Courses:</h5>
+<ul>
+    @foreach (var c in Model.Courses ?? new List<MySchoolApp.Models.Course>())
+    {
+        <li>@c.Name</li>
+    }
+</ul>
+
+<a asp-action="ShowAll" class="btn btn-secondary">Back</a>

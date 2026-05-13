@@ -1,0 +1,26 @@
+﻿@model MySchoolApp.ViewModels.DepartmentViewModel
+
+<h2>Department Stats: @Model.DepartmentName</h2>
+
+<div class="alert @(Model.DepartmentState == "Main" ? "alert-success" : "alert-warning")">
+    <strong>Status:</strong> @Model.DepartmentState
+    (@(Model.DepartmentState == "Main" ? "More than 50 students" : "Less than 50 students"))
+</div>
+
+<h5>Students older than 25:</h5>
+
+@if (Model.StudentsOver25.Any())
+{
+    <select class="form-select" style="max-width:300px">
+        @foreach (var name in Model.StudentsOver25)
+        {
+            <option>@name</option>
+        }
+    </select>
+}
+else
+{
+    <p class="text-muted">No students over 25 in this department.</p>
+}
+
+<a asp-action="ShowAll" class="btn btn-secondary mt-3">Back</a>

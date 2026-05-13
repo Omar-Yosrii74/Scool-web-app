@@ -1,0 +1,26 @@
+﻿@model MySchoolApp.Models.Student
+
+@{
+    ViewData["Title"] = "Student Details";
+}
+
+<h2>Student Details</h2>
+
+<div class="card" style="max-width: 500px;">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p><strong>ID:</strong> @Model.Id</p>
+        <p><strong>Age:</strong> @Model.Age</p>
+        <p><strong>Department:</strong> @Model.Department?.Name</p>
+
+        <h6>Courses & Grades:</h6>
+        <ul>
+            @foreach (var sc in Model.StuCrsRes ?? new List<MySchoolApp.Models.StuCrsRes>())
+            {
+                <li>@sc.Course?.Name - Grade: @sc.Grade</li>
+            }
+        </ul>
+    </div>
+</div>
+
+<a asp-action="ShowAll" class="btn btn-secondary mt-3">Back to All Students</a>
