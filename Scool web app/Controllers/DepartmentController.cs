@@ -9,13 +9,9 @@ namespace MySchoolApp.Controllers
     public class DepartmentController : Controller
     {
         private readonly AppDbContext _context;
+        public DepartmentController(AppDbContext context) { _context = context; }
 
-        public DepartmentController(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        // GET: /Department/ShowAll
+        // /Department/ShowAll
         public IActionResult ShowAll()
         {
             var departments = _context.Departments
@@ -24,62 +20,53 @@ namespace MySchoolApp.Controllers
             return View(departments);
         }
 
-        // GET: /Department/ShowDetails/1
+        // /Department/ShowDetails?id=1
         public IActionResult ShowDetails(int id)
         {
-            var department = _context.Departments
-                                     .Include(d => d.Students)
-                                     .Include(d => d.Courses)
-                                     .FirstOrDefault(d => d.Id == id);
-
-            if (department == null)
-                return NotFound();
-
-            return View(department);
+            var dept = _context.Departments
+                               .Include(d => d.Students)
+                               .Include(d => d.Courses)
+                               .FirstOrDefault(d => d.Id == id);
+            if (dept == null) return NotFound();
+            return View(dept);
         }
 
         // GET: /Department/Add
         [HttpGet]
-        public IActionResult Add()
-        {
-            return View();
-        }
+        public IActionResult Add() => View();
 
         // POST: /Department/Add
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Add(Department department)
+        public IActionResult Add(Department dept)
         {
             if (ModelState.IsValid)
             {
-                _context.Departments.Add(department);
+                _context.Departments.Add(dept);
                 _context.SaveChanges();
                 return RedirectToAction("ShowAll");
             }
-            return View(department);
+            return View(dept);
         }
 
-        // GET: /Department/DeptStats/1
+        // /Department/DeptStats?id=1
         public IActionResult DeptStats(int id)
         {
-            var department = _context.Departments
-                                     .Include(d => d.Students)
-                                     .FirstOrDefault(d => d.Id == id);
+            var dept = _context.Departments
+                               .Include(d => d.Students)
+                               .FirstOrDefault(d => d.Id == id);
+            if (dept == null) return NotFound();
 
-            if (department == null)
-                return NotFound();
-
-            var viewModel = new DepartmentViewModel
+            var vm = new DepartmentViewModel
             {
-                DepartmentName = department.Name,
-                StudentsOver25 = department.Students
-                                           .Where(s => s.Age > 25)
-                                           .Select(s => s.Name)
-                                           .ToList(),
-                DepartmentState = department.Students.Count > 50 ? "Main" : "Branch"
+                DepartmentName = dept.Name,
+                StudentsOver25 = dept.Students
+                                     .Where(s => s.Age > 25)
+                                     .Select(s => s.Name)
+                                     .ToList(),
+                DepartmentState = dept.Students.Count > 50 ? "Main" : "Branch"
             };
-
-            return View(viewModel);
+            return View(vm);
         }
     }
 }
